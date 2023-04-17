@@ -55,6 +55,7 @@ var ResourceRegistry []*schema.RegistryItem = []*schema.RegistryItem{
 	getStorageBucketRegistryItem(),
 	getComputePerInstanceConfigRegistryItem(),
 	getComputeRegionPerInstanceConfigRegistryItem(),
+	getDataprocClusterRegistryItem(),
 }
 
 // FreeResources grouped alphabetically
@@ -194,7 +195,6 @@ var FreeResources = []string{
 	"google_storage_object_acl",
 	"google_usage_export_bucket",
 }
-
 var UsageOnlyResources = []string{}
 
 // TODO: This is a list of all the google_compute* resources that may have prices:

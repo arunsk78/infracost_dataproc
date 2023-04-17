@@ -1,0 +1,18 @@
+
+ Name                                                                             Monthly Qty  Unit   Monthly Cost 
+                                                                                                                   
+ google_dataproc_cluster.dataproc_cluster                                                                          
+ ├─ Instance usage (Linux/UNIX, on-demand, n1-standard-2) - Master Node                   730  hours        $48.54 
+ ├─ Standard provisioned storage (pd-standard)                                            700  GB           $28.00 
+ ├─ Instance usage (Linux/UNIX, on-demand, n1-standard-4) - Worker Node                   730  hours        $97.09 
+ ├─ Standard provisioned storage (pd-standard)                                            200  GB            $8.00 
+ ├─ Local SSD provisioned storage                                                         375  GB           $30.00 
+ ├─ Instance usage (Linux/UNIX, on-demand, e2-medium) - Preemptible Worker Node           730  hours        $24.46 
+ └─ Standard provisioned storage (pd-standard)                                            300  GB           $12.00 
+                                                                                                                   
+ OVERALL TOTAL                                                                                             $248.09 
+──────────────────────────────────
+2 cloud resources were detected:
+∙ 1 was estimated
+∙ 1 was free:
+  ∙ 1 x google_service_account

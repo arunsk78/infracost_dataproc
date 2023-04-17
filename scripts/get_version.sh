@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash 
 
 COMMITISH=${1:-HEAD}
 NO_DIRTY=${2:-false}

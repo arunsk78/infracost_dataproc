@@ -26,6 +26,22 @@ type ContainerNodeConfig struct {
 	GuestAccelerators []*ComputeGuestAccelerator
 }
 
+type DiskConfig struct {
+	BootDiskSize      float64
+	BootDiskType      string
+	NumLocalSSDs     int64
+}
+
+
+type MasterConfig struct {
+	MachineType       string
+	PurchaseOption    string
+	NumInstances	int64
+	GuestAccelerators []*ComputeGuestAccelerator
+
+}
+
+
 // computeCostComponent returns a cost component for Compute instance usage.
 func computeCostComponent(region, machineType string, purchaseOption string, instanceCount int64, monthlyHours *float64) *schema.CostComponent {
 	sustainedUseDiscount := 0.0
@@ -45,6 +61,45 @@ func computeCostComponent(region, machineType string, purchaseOption string, ins
 
 	return &schema.CostComponent{
 		Name:                fmt.Sprintf("Instance usage (Linux/UNIX, %s, %s)", purchaseOptionLabel(purchaseOption), machineType),
+		Unit:                "hours",
+		UnitMultiplier:      decimal.NewFromInt(1),
+		MonthlyQuantity:     decimalPtr(qty.Mul(decimal.NewFromInt(instanceCount))),
+		MonthlyDiscountPerc: sustainedUseDiscount,
+		ProductFilter: &schema.ProductFilter{
+			VendorName:    strPtr("gcp"),
+			Region:        strPtr(region),
+			Service:       strPtr("Compute Engine"),
+			ProductFamily: strPtr("Compute Instance"),
+			AttributeFilters: []*schema.AttributeFilter{
+				{Key: "machineType", ValueRegex: regexPtr(fmt.Sprintf("^%s$", machineType))},
+			},
+		},
+		PriceFilter: &schema.PriceFilter{
+			PurchaseOption: strPtr(purchaseOption),
+		},
+	}
+}
+
+
+// computeCostComponent returns a cost component for Compute instance usage.
+func computeCostDataProcComponent(region, machineType string, purchaseOption string, instanceCount int64, monthlyHours *float64,nodeType string) *schema.CostComponent {
+	sustainedUseDiscount := 0.0
+	if strings.ToLower(purchaseOption) == "on_demand" {
+		switch strings.ToLower(strings.Split(machineType, "-")[0]) {
+		case "c2", "n2", "n2d":
+			sustainedUseDiscount = 0.2
+		case "n1", "f1", "g1", "m1":
+			sustainedUseDiscount = 0.3
+		}
+	}
+
+	qty := decimal.NewFromFloat(730)
+	if monthlyHours != nil {
+		qty = decimal.NewFromFloat(*monthlyHours)
+	}
+
+	return &schema.CostComponent{
+		Name:                fmt.Sprintf("Instance usage (Linux/UNIX, %s, %s) - %s ", purchaseOptionLabel(purchaseOption), machineType, nodeType ),
 		Unit:                "hours",
 		UnitMultiplier:      decimal.NewFromInt(1),
 		MonthlyQuantity:     decimalPtr(qty.Mul(decimal.NewFromInt(instanceCount))),
